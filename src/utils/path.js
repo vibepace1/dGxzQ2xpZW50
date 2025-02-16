@@ -46,12 +46,19 @@ class TlsDependency {
     getTLSDependencyPath(customPath = null) {
         let _filename = `${this.filename}-${this.version}-${this.distribution}.${this.extension}`;
         
+        if (customPath) {
+            return {
+                DOWNLOAD_PATH: '',
+                TLS_LIB_PATH: path.join(customPath, _filename)
+            };
+        }
+    
         const projectRoot = path.resolve(__dirname, '../../');
         const libPath = path.join(projectRoot, 'lib', _filename);
         
         return {
             DOWNLOAD_PATH: '',
-            TLS_LIB_PATH: libPath,
+            TLS_LIB_PATH: libPath
         };
     }
 }
