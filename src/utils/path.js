@@ -3,6 +3,9 @@ import os from 'node:os';
 import path from 'node:path';
 import { URL } from 'node:url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 class TlsDependency {
     constructor() {
         this.arch = os.arch();
