@@ -83,20 +83,15 @@ async downloadLibrary() {
      * @description Opens the TLS library and initializes the worker pool.
      * @returns {Promise<void>}
      */
-    async open() {
-        if (this.pool) return;
-        
-        if (this.libraryExists()) {
-            console.log(`[tlsClient] Found TLS library at: ${this.TLS_LIB_PATH}`);
-        } else {
-            const libraryError = `TLS library not found at ${this.TLS_LIB_PATH}. ` +
-                `Please ensure the library file (${path.basename(this.TLS_LIB_PATH)}) ` +
-                `is placed in the lib directory.`;
-            throw new Error(libraryError);
-        }
+async open() {
+    if (this.pool) return;
     
-        this.pool = this.startWorkerPool();
+    if (isMainThread) {
+        await this.downloadLibrary();
     }
+    
+    this.pool = this.startWorkerPool();
+}
 
     /**
      * @private
