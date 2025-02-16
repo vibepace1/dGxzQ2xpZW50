@@ -68,31 +68,15 @@ class ModuleClient {
      * @description Downloads the TLS library if it does not exist.
      * @returns {Promise<void>}
      */
-    async downloadLibrary() {
-        if (this.libraryExists()) return;
-        if (this.customPath) {
-            throw new Error('Custom path provided but library does not exist: ' + this.TLS_LIB_PATH);
-        }
-        console.log('[tlsClient] Detected missing TLS library');
-        console.log('[tlsClient] DownloadPath: ' + this.tlsDependencyPath.DOWNLOAD_PATH);
-        console.log('[tlsClient] DestinationPath: ' + this.TLS_LIB_PATH);
-        console.log('[tlsClient] Downloading TLS library... This may take a while');
-
-        const response = await fetch(this.tlsDependencyPath.DOWNLOAD_PATH);
-        if (!response.ok) {
-            throw new Error(`Unexpected response ${response.statusText}`);
-        }
-        const fileStream = fs.createWriteStream(this.TLS_LIB_PATH);
-        response.body.pipe(fileStream);
-
-        return new Promise((resolve, reject) => {
-            fileStream.on('finish', () => {
-                console.log('[tlsClient] Successfully downloaded TLS library');
-                resolve();
-            });
-            fileStream.on('error', reject);
-        });
+async downloadLibrary() {
+    if (this.libraryExists()) return;
+    
+    if (this.customPath) {
+        throw new Error('Custom path provided but library does not exist: ' + this.TLS_LIB_PATH);
     }
+
+    throw new Error(`TLS library not found at ${this.TLS_LIB_PATH}. Please ensure the library file is placed in the lib directory.`);
+}
 
     /**
      * @private
