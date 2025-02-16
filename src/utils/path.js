@@ -49,7 +49,7 @@ class TlsDependency {
 
     getTLSDependencyPath() {
         let _filename = `${this.filename}-${this.version}-${this.distribution}.${this.extension}`;
-        const libFolder = path.join(__dirname, '..', 'lib');
+        const libFolder = path.join(__dirname, '..', '..', 'lib');
         
         if (!fs.existsSync(libFolder)) {
             throw new Error(`Library folder does not exist: ${libFolder}`);
