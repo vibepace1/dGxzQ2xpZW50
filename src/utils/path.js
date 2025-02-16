@@ -47,17 +47,18 @@ class TlsDependency {
         }
     }
 
-    getTLSDependencyPath(customPath = null) {
+    getTLSDependencyPath() {
         let _filename = `${this.filename}-${this.version}-${this.distribution}.${this.extension}`;
-        const url = new URL(`https://github.com/bogdanfinn/tls-client/releases/download/v${this.version}/${_filename}`);
-        const downloadFolder = customPath ?? os.tmpdir() ?? process.cwd();
-        if (!fs.existsSync(downloadFolder)) throw new Error(`The download folder does not exist: ${downloadFolder}`);
+        const libFolder = path.join(__dirname, '..', 'lib');
+        
+        if (!fs.existsSync(libFolder)) {
+            throw new Error(`Library folder does not exist: ${libFolder}`);
+        }
 
-        const destination = path.join(downloadFolder, _filename);
-
+        const libPath = path.join(libFolder, _filename);
+        
         return {
-            DOWNLOAD_PATH: url.href,
-            TLS_LIB_PATH: destination,
+            TLS_LIB_PATH: libPath
         };
     }
 }
