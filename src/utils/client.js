@@ -60,7 +60,7 @@ class ModuleClient {
      * @returns {boolean} True if the library exists, false otherwise.
      */
     libraryExists() {
-        return fs.existsSync(path.join(this.TLS_LIB_PATH));
+        return fs.existsSync(this.TLS_LIB_PATH);
     }
 
     /**
