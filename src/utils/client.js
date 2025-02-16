@@ -60,7 +60,7 @@ class ModuleClient {
      * @returns {boolean} True if the library exists, false otherwise.
      */
     libraryExists() {
-        return fs.existsSync(path.join(this.TLS_LIB_PATH));
+        return fs.existsSync(this.TLS_LIB_PATH);
     }
 
     /**
@@ -100,10 +100,12 @@ class ModuleClient {
      * @returns {Promise<void>}
      */
     async open() {
-        if (this.pool) return; // Prevent repeated initializations
-        if (isMainThread) {
-            await this.downloadLibrary();
+        if (this.pool) return;
+        
+        if (!this.libraryExists()) {
+            throw new Error(`TLS library not found at: ${this.TLS_LIB_PATH}. Please ensure the library file exists in the lib folder.`);
         }
+        
         this.pool = this.startWorkerPool();
     }
 
