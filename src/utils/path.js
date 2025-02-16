@@ -1,11 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { URL } from 'node:url';
 
 class TlsDependency {
     constructor() {
@@ -27,16 +23,24 @@ class TlsDependency {
             this.distribution = this.arch == 'arm64' ? 'darwin-arm64' : 'darwin-amd64';
         } else if (this.platform === 'linux') {
             this.extension = 'so';
+
             const archMap = {
                 arm64: 'linux-arm64',
                 x64: 'linux-amd64',
                 ia32: 'linux-386',
-                arm: 'linux-arm-7',
+                arm: 'linux-arm-7', // assuming ARMv7
                 ppc64: 'linux-ppc64le',
                 riscv64: 'linux-riscv64',
                 s390x: 'linux-s390x',
             };
-            this.distribution = archMap[this.arch] || 'linux-amd64';
+
+            const distribution = archMap[this.arch];
+
+            if (!distribution) {
+                console.error(`Unsupported architecture: ${this.arch}, defaulting to linux-amd64`);
+            }
+
+            this.distribution = distribution || 'linux-amd64';
         } else {
             console.error(`Unsupported platform: ${this.platform}`);
             process.exit(1);
@@ -45,20 +49,15 @@ class TlsDependency {
 
     getTLSDependencyPath(customPath = null) {
         let _filename = `${this.filename}-${this.version}-${this.distribution}.${this.extension}`;
-        
-        if (customPath) {
-            return {
-                DOWNLOAD_PATH: '',
-                TLS_LIB_PATH: path.join(customPath, _filename)
-            };
-        }
-    
-        const projectRoot = path.resolve(__dirname, '../../');
-        const libPath = path.join(projectRoot, 'lib', _filename);
-        
+        const url = new URL(`https://github.com/bogdanfinn/tls-client/releases/download/v${this.version}/${_filename}`);
+        const downloadFolder = customPath ?? os.tmpdir() ?? process.cwd();
+        if (!fs.existsSync(downloadFolder)) throw new Error(`The download folder does not exist: ${downloadFolder}`);
+
+        const destination = path.join(downloadFolder, _filename);
+
         return {
-            DOWNLOAD_PATH: '',
-            TLS_LIB_PATH: libPath
+            DOWNLOAD_PATH: url.href,
+            TLS_LIB_PATH: destination,
         };
     }
 }
