@@ -9,6 +9,7 @@ function createInstance() {
     if (!lib) {
         try {
             lib = koffi.load(workerData.libraryPath);
+            console.log(`[tlsClient] Successfully loaded library in worker thread`);
         } catch (error) {
             throw new Error(`Failed to load library at ${workerData.libraryPath}: ${error.message}`);
         }
