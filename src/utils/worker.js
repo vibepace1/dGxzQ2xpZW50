@@ -7,7 +7,11 @@ let instance = null;
 
 function createInstance() {
     if (!lib) {
-        lib = koffi.load(workerData.libraryPath);
+        try {
+            lib = koffi.load(workerData.libraryPath);
+        } catch (error) {
+            throw new Error(`Failed to load library at ${workerData.libraryPath}: ${error.message}`);
+        }
     }
     return {
         request: lib.func('request', 'string', ['string']),
