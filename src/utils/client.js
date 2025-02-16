@@ -3,12 +3,12 @@ import Piscina from 'piscina';
 import TlsDependency from './path.js';
 import path from 'node:path';
 import fs from 'node:fs';
-import fetch from 'node-fetch';
 import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import { isMainThread } from 'worker_threads';
 
-let __filename, __dirname;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 if (typeof __filename === 'undefined' && typeof __dirname === 'undefined') {
     if (typeof require !== 'undefined' && require.main) {
