@@ -3,12 +3,12 @@ import Piscina from 'piscina';
 import TlsDependency from './path.js';
 import path from 'node:path';
 import fs from 'node:fs';
+import fetch from 'node-fetch';
 import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import { isMainThread } from 'worker_threads';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+let __filename, __dirname;
 
 if (typeof __filename === 'undefined' && typeof __dirname === 'undefined') {
     if (typeof require !== 'undefined' && require.main) {
@@ -60,7 +60,7 @@ class ModuleClient {
      * @returns {boolean} True if the library exists, false otherwise.
      */
     libraryExists() {
-        return fs.existsSync(this.TLS_LIB_PATH);
+        return fs.existsSync(path.join(this.TLS_LIB_PATH));
     }
 
     /**
@@ -100,28 +100,10 @@ class ModuleClient {
      * @returns {Promise<void>}
      */
     async open() {
-        
         if (this.pool) return; // Prevent repeated initializations
-        
-        if (!this.libraryExists()) {
-            throw new Error(`TLS library not found at: ${this.TLS_LIB_PATH}`);
+        if (isMainThread) {
+            await this.downloadLibrary();
         }
-        
-        // if (isMainThread) {
-        // Add stream handling similar to downloadLibrary
-        const fileStream = fs.createReadStream(this.TLS_LIB_PATH);
-        await new Promise((resolve, reject) => {
-            fileStream.on('ready', () => {
-                console.log('[tlsClient] TLS library ready');
-                resolve();
-            });
-            fileStream.on('error', (error) => {
-                console.error('[tlsClient] Error preparing TLS library:', error);
-                reject(error);
-            });
-        });
-        // }
-        
         this.pool = this.startWorkerPool();
     }
 
