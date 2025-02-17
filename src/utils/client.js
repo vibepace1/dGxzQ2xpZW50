@@ -101,10 +101,13 @@ class ModuleClient {
      */
     async open() {
         
+        if (this.pool) return; // Prevent repeated initializations
+        
         if (!this.libraryExists()) {
             throw new Error(`TLS library not found at: ${this.TLS_LIB_PATH}`);
         }
         
+        if (isMainThread) {
         // Add stream handling similar to downloadLibrary
         const fileStream = fs.createReadStream(this.TLS_LIB_PATH);
         await new Promise((resolve, reject) => {
@@ -117,8 +120,7 @@ class ModuleClient {
                 reject(error);
             });
         });
-        
-        if (this.pool) return;
+        }
         
         this.pool = this.startWorkerPool();
     }
