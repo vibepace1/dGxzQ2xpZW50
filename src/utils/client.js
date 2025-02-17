@@ -100,7 +100,6 @@ class ModuleClient {
      * @returns {Promise<void>}
      */
     async open() {
-        if (this.pool) return;
         
         if (!this.libraryExists()) {
             throw new Error(`TLS library not found at: ${this.TLS_LIB_PATH}`);
@@ -118,6 +117,8 @@ class ModuleClient {
                 reject(error);
             });
         });
+        
+        if (this.pool) return;
         
         this.pool = this.startWorkerPool();
     }
