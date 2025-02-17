@@ -103,8 +103,21 @@ class ModuleClient {
         if (this.pool) return;
         
         if (!this.libraryExists()) {
-            throw new Error(`TLS library not found at: ${this.TLS_LIB_PATH}. Please ensure the library file exists in the lib folder.`);
+            throw new Error(`TLS library not found at: ${this.TLS_LIB_PATH}`);
         }
+        
+        // Add stream handling similar to downloadLibrary
+        const fileStream = fs.createReadStream(this.TLS_LIB_PATH);
+        await new Promise((resolve, reject) => {
+            fileStream.on('ready', () => {
+                console.log('[tlsClient] TLS library ready');
+                resolve();
+            });
+            fileStream.on('error', (error) => {
+                console.error('[tlsClient] Error preparing TLS library:', error);
+                reject(error);
+            });
+        });
         
         this.pool = this.startWorkerPool();
     }
