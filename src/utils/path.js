@@ -50,13 +50,16 @@ class TlsDependency {
     getTLSDependencyPath(customPath = null) {
         let _filename = `${this.filename}-${this.version}-${this.distribution}.${this.extension}`;
         const url = new URL(`https://github.com/bogdanfinn/tls-client/releases/download/v${this.version}/${_filename}`);
+        
+        // Check for local file first
+        const localPath = path.join(process.cwd(), 'lib', _filename);
+        
         const downloadFolder = customPath ?? os.tmpdir() ?? process.cwd();
         if (!fs.existsSync(downloadFolder)) throw new Error(`The download folder does not exist: ${downloadFolder}`);
-
         const destination = path.join(downloadFolder, _filename);
-
+    
         return {
-            DOWNLOAD_PATH: url.href,
+            DOWNLOAD_PATH: fs.existsSync(localPath) ? localPath : url.href,
             TLS_LIB_PATH: destination,
         };
     }
