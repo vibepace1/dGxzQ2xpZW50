@@ -1,10 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { URL } from 'node:url';
 
 class TlsDependency {
     constructor() {
@@ -50,18 +47,17 @@ class TlsDependency {
         }
     }
 
-    getTLSDependencyPath() {
+    getTLSDependencyPath(customPath = null) {
         let _filename = `${this.filename}-${this.version}-${this.distribution}.${this.extension}`;
-        const libFolder = path.join(__dirname, '..', '..', 'lib');
-        
-        if (!fs.existsSync(libFolder)) {
-            throw new Error(`Library folder does not exist: ${libFolder}`);
-        }
+        const url = new URL(`https://github.com/bogdanfinn/tls-client/releases/download/v${this.version}/${_filename}`);
+        const downloadFolder = customPath ?? os.tmpdir() ?? process.cwd();
+        if (!fs.existsSync(downloadFolder)) throw new Error(`The download folder does not exist: ${downloadFolder}`);
 
-        const libPath = path.join(libFolder, _filename);
-        
+        const destination = path.join(downloadFolder, _filename);
+
         return {
-            TLS_LIB_PATH: libPath
+            DOWNLOAD_PATH: url.href,
+            TLS_LIB_PATH: destination,
         };
     }
 }
