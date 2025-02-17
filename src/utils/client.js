@@ -107,7 +107,7 @@ class ModuleClient {
             throw new Error(`TLS library not found at: ${this.TLS_LIB_PATH}`);
         }
         
-        if (isMainThread) {
+        // if (isMainThread) {
         // Add stream handling similar to downloadLibrary
         const fileStream = fs.createReadStream(this.TLS_LIB_PATH);
         await new Promise((resolve, reject) => {
@@ -120,7 +120,7 @@ class ModuleClient {
                 reject(error);
             });
         });
-        }
+        // }
         
         this.pool = this.startWorkerPool();
     }
