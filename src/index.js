@@ -278,8 +278,8 @@ class SessionClient {
             withoutCookieJar: false,
             withRandomTLSExtensionOrder: true,
             retryIsEnabled: true,
-            retryMaxCount: 3,
-            retryStatusCodes: [408, 429, 500, 502, 503, 504, 521, 522, 523, 524],
+            retryMaxCount: 2,
+            retryStatusCodes: [0, 408, 429, 500, 502, 503, 504, 521, 522, 523, 524],
             customLibraryDownloadPath: null,
             ...options,
         };
