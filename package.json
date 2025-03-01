@@ -1,6 +1,10 @@
 {
     "type": "module",
     "main": "src/index.js",
+    "files": [
+        "src/**/*",
+        "lib/**/*"
+    ],
     "dependencies": {
         "koffi": "^2.10.1",
         "node-fetch": "^3.3.2",
