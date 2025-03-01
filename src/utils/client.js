@@ -73,11 +73,19 @@ async downloadLibrary() {
     if (this.customPath) {
         throw new Error('Custom path provided but library does not exist: ' + this.TLS_LIB_PATH);
     }
+    
+    // If we're using the bundled library, no need to download
+    if (this.tlsDependencyPath.LOCAL_PATH && 
+        this.tlsDependencyPath.LOCAL_PATH === this.TLS_LIB_PATH) {
+        console.log('[tlsClient] Using bundled TLS library');
+        return;
+    }
+    
     console.log('[tlsClient] Detected missing TLS library');
     console.log('[tlsClient] DownloadPath: ' + this.tlsDependencyPath.DOWNLOAD_PATH);
     console.log('[tlsClient] DestinationPath: ' + this.TLS_LIB_PATH);
 
-    // Check if local file exists
+    // Check if local file exists but needs to be copied to destination
     if (this.tlsDependencyPath.LOCAL_PATH) {
         console.log('[tlsClient] Copying local TLS library...');
         fs.copyFileSync(this.tlsDependencyPath.LOCAL_PATH, this.TLS_LIB_PATH);
