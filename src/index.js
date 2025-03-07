@@ -466,12 +466,12 @@ class SessionClient {
      * @param {Partial<TlsClientOptions>} [options={}] - The request options
      * @returns {Promise<TlsClientResponse>} The response from the server
      */
-    async delete(url, options = {}) {
+    async delete(url, body, options = {}) {
         return this.#request({
             sessionId: this.sessionId,
             requestUrl: this.#convertUrl(url),
             requestMethod: 'DELETE',
-            requestBody: '',
+            requestBody: this.#convertBody(body),
             requestCookies: [],
             ...options,
         });
