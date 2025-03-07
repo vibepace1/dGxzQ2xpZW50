@@ -463,6 +463,7 @@ class SessionClient {
     /**
      * @description Send a DELETE request
      * @param {URL|string} url - The URL to send the request to
+     * @param {object|string} body - The request body
      * @param {Partial<TlsClientOptions>} [options={}] - The request options
      * @returns {Promise<TlsClientResponse>} The response from the server
      */
