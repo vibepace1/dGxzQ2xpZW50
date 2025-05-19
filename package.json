@@ -1,0 +1,14 @@
+{
+    "name": "tlsclientwrapper",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "type": "module",
+    "dependencies": {
+        "koffi": "^2.9.0",
+        "node-fetch": "^3.3.2",
+        "piscina": "^5.0.0-alpha.0"
+    },
+    "devDependencies": {
+        "axios": "^1.7.9"
+    }
+}
